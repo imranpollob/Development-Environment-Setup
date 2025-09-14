@@ -1,6 +1,6 @@
 # Development Environment Setup
 
-Opinionated, step-by-step instructions for setting up a full-stack development environment on Ubuntu or Linux Mint or Windows. 
+Opinionated, step-by-step instructions for setting up a full-stack development environment on Ubuntu, Linux Mint, or Windows.
 
 > Tip: Perform a system update before installing new software to avoid most errors.
 
@@ -20,6 +20,7 @@ Opinionated, step-by-step instructions for setting up a full-stack development e
   - [MongoDB](#mongodb)
   - [Zsh \& Shell Tools](#zsh--shell-tools)
   - [Useful Commands](#useful-commands)
+  - [Windows Notes](#windows-notes)
 
 ## Quick Start
 ```bash
@@ -35,11 +36,15 @@ sudo apt update && sudo apt upgrade
 ```bash
 sudo apt install -y git
 git config --global user.name "Your Name"
-git config --global user.username "your-username"
 git config --global user.email "you@example.com"
 ```
 
-- Generate SSH keys for GitHub: follow the official guide: https://help.github.com/articles/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent/
+- Generate SSH keys for GitHub: https://docs.github.com/en/authentication/connecting-to-github-with-ssh/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent
+
+Windows:
+- Install Git for Windows: `winget install --id Git.Git -e` (or Chocolatey: `choco install git`)
+- Configure the same `user.name` and `user.email` as above.
+- Git Credential Manager is included; use `git credential-manager configure` if needed.
 
 ## Node.js
 Recommended: install via Node Version Manager ([nvm](https://github.com/nvm-sh/nvm#install--update-script))
@@ -48,11 +53,16 @@ nvm install --lts
 nvm use --lts
 ```
 
-Alternative: install standalone Node.js 20 via NodeSource
+Alternative (Linux): install standalone Node.js LTS via NodeSource
 ```bash
-curl -sL https://deb.nodesource.com/setup_20.x | sudo -E bash -
+curl -fsSL https://deb.nodesource.com/setup_22.x | sudo -E bash -
 sudo apt install -y nodejs
 ```
+
+Windows:
+- Recommended: nvm-windows (Corey Butler): `winget install --id CoreyButler.NVMforWindows -e`
+  - Then in a new shell: `nvm install lts` and `nvm use lts`
+- Alternative: install Node LTS directly: `winget install --id OpenJS.NodeJS.LTS -e`
 
 ## Python
 Recommended: install via [pyenv](https://github.com/pyenv/pyenv#automatic-installer), then [set up your shell](https://github.com/pyenv/pyenv#set-up-your-shell-environment-for-pyenv) and [build deps](https://github.com/pyenv/pyenv/wiki#suggested-build-environment).
@@ -62,7 +72,11 @@ pyenv install <PYTHON_VERSION>
 pyenv global <PYTHON_VERSION>
 ```
 
-Alternative: standalone install (version-specific instructions): https://www.debugpoint.com/install-python-3-12-ubuntu/
+Alternative (Linux): use OS packages or a trusted PPA (e.g., deadsnakes for older releases). For Ubuntu 24.04+, Python 3.12+ is in the official repo.
+
+Windows:
+- Recommended: `winget install --id Python.Python.3.12 -e` (or latest 3.x)
+- Alternative: pyenv-win: https://github.com/pyenv-win/pyenv-win
 
 ## Apache
 ```bash
@@ -80,42 +94,47 @@ sudo systemctl start mysql.service
 sudo systemctl enable mysql.service
 ```
 
-Password hardening and root access:
+Secure installation and root access:
 ```bash
 sudo mysql_secure_installation
 ```
 - When prompted, answer the questions to set a strong root password and remove insecure defaults.
-- If your install uses a temporary root password, you may find it here:
+- On Ubuntu, the `root` MySQL user may authenticate via `auth_socket`. To set a password:
 ```bash
-sudo grep 'temporary password' /var/log/mysqld.log || true
+sudo mysql
+-- inside MySQL shell:
+ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'MyNewPass4!';
+FLUSH PRIVILEGES;
 ```
-- Login and change the root password if needed:
-```bash
-mysql -u root -p
-# then inside MySQL shell:
-ALTER USER 'root'@'localhost' IDENTIFIED BY 'MyNewPass4!';
-```
-- Alternate reset method: https://linuxconfig.org/how-to-reset-root-mysql-password-on-ubuntu-18-04-bionic-beaver-linux
 
 Restart MySQL when required:
 ```bash
 sudo systemctl restart mysql.service
 ```
 
-## PHP
-Example install (specific version packages shown):
-```bash
-sudo apt install -y \
-  php7.2 libapache2-mod-php php7.2-common php7.2-mbstring php7.2-xmlrpc \
-  php7.2-soap php7.2-gd php7.2-xml php7.2-mysql php7.2-cli php7.2-zip
-```
+Windows:
+- Install MySQL Community Server: `winget install --id Oracle.MySQL -e` (or Chocolatey: `choco install mysql`)
+- Alternatively use MariaDB: `winget install --id MariaDB.Server -e`
 
-- If you see "Unable to locate package", add the community PPA and try again:
+## PHP
+Recommended (Ubuntu): use supported PHP 8.x packages
 ```bash
-sudo apt-add-repository ppa:ondrej/php
 sudo apt update
+sudo apt install -y software-properties-common
+sudo add-apt-repository ppa:ondrej/php -y
+sudo apt update
+sudo apt install -y \
+  php8.2 php8.2-cli php8.2-fpm php8.2-mysql php8.2-xml php8.2-curl php8.2-zip php8.2-mbstring \
+  libapache2-mod-php8.2
+# Enable PHP with Apache (mod_php):
+sudo a2enmod php8.2 && sudo systemctl restart apache2
 ```
-- Switching between PHP versions: https://tecadmin.net/switch-between-multiple-php-version-on-ubuntu/
+- To use the latest stable, replace `8.2` with `8.3` if available for your distro.
+- Switching between versions: https://tecadmin.net/switch-between-multiple-php-version-on-ubuntu/
+
+Windows:
+- Simplest: use a bundle (XAMPP/WAMP) that includes Apache, PHP, and MySQL.
+- Native packages: `choco install php` or `winget install --id PHP.PHP -e` (ensure PHP is on PATH)
 
 ## phpMyAdmin
 ```bash
@@ -123,13 +142,18 @@ sudo apt install -y phpmyadmin
 ```
 - Alternative: [Adminer](https://www.adminer.org/#download)
 
+Note: Availability via `apt` can vary by Ubuntu release. If not found, see https://www.phpmyadmin.net/downloads/ for manual install steps.
+
 ## Composer
 ```bash
 curl -sS https://getcomposer.org/installer | sudo php -- --install-dir=/usr/local/bin --filename=composer
 ```
 
 ## MongoDB
-Follow the official guide: https://docs.mongodb.com/manual/tutorial/install-mongodb-on-ubuntu/#install-mongodb-community-edition-using-deb-packages
+Follow the official guide: https://www.mongodb.com/docs/manual/tutorial/install-mongodb-on-ubuntu/
+
+Windows:
+- Install MongoDB Community Server: `winget install --id MongoDB.MongoDBServer -e`
 
 ## Zsh & Shell Tools
 Install Zsh and Oh My Zsh:
@@ -149,10 +173,19 @@ Other handy CLI tools:
 - bat: https://github.com/sharkdp/bat#installation
 - fzf: https://github.com/junegunn/fzf#installation
 
+Windows:
+- Best experience: use WSL2 and follow the Linux steps inside your distro.
+- Native PowerShell alternatives:
+  - Prompt/theme: use [Oh My Posh](https://ohmyposh.dev) for a modern, cross-shell prompt theme engine.
+  - Cross-shell prompt: https://starship.rs/
+  - fzf: `winget install junegunn.fzf` (or `choco install fzf`)
+  - bat: `winget install sharkdp.bat` (binary is `bat`)
+
+
 ## Useful Commands
 ```bash
 # Reboot immediately
-sudo shutdown -r 0
+sudo reboot
 
 # Reload Bash config
 source ~/.bashrc
@@ -164,3 +197,8 @@ source ~/.zshrc
 exec bash
 exec zsh
 ```
+
+## Windows Notes
+- Prefer WSL2 for a Linux-like development environment on Windows; install with `wsl --install`, then choose Ubuntu.
+- Package managers: this guide shows `winget` first; Chocolatey (`choco`) and Scoop are good alternatives.
+- After installing CLI tools with winget/Chocolatey, restart the terminal to refresh PATH.
