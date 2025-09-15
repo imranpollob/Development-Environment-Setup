@@ -22,6 +22,7 @@ Opinionated, step-by-step instructions for setting up a full-stack development e
   - [Custom Aliases (PowerShell \& zsh)](#custom-aliases-powershell--zsh)
     - [Windows — PowerShell](#windows--powershell)
     - [zsh (Linux/macOS)](#zsh-linuxmacos)
+    - [PowerShell accept only next word with Right Arrow](#powershell-accept-only-next-word-with-right-arrow)
   - [Useful Commands](#useful-commands)
   - [Windows Notes](#windows-notes)
 
@@ -265,6 +266,25 @@ Test it:
 ```bash
 s "A nice house"   # -> a-nice-house (copied)
 ```
+
+
+### PowerShell accept only next word with Right Arrow
+Speed up inline suggestions (PSReadLine) by mapping RightArrow to accept only the next suggested word (instead of the whole line):
+
+
+Open (or create) your profile file:
+```bash
+notepad $PROFILE
+```
+Add this line (add only once):
+```bash
+Set-PSReadLineKeyHandler -Chord "RightArrow" -Function ForwardWord
+```
+Save, then reload:
+```bash
+. $PROFILE
+```
+
 
 ## Useful Commands
 ```bash
