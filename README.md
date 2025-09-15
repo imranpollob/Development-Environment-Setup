@@ -19,6 +19,9 @@ Opinionated, step-by-step instructions for setting up a full-stack development e
   - [Composer](#composer)
   - [MongoDB](#mongodb)
   - [Zsh \& Shell Tools](#zsh--shell-tools)
+  - [Custom Aliases (PowerShell \& zsh)](#custom-aliases-powershell--zsh)
+    - [Windows — PowerShell](#windows--powershell)
+    - [zsh (Linux/macOS)](#zsh-linuxmacos)
   - [Useful Commands](#useful-commands)
   - [Windows Notes](#windows-notes)
 
@@ -179,8 +182,89 @@ Windows:
   - Prompt/theme: use [Oh My Posh](https://ohmyposh.dev) for a modern, cross-shell prompt theme engine.
   - Cross-shell prompt: https://starship.rs/
   - fzf: `winget install junegunn.fzf` (or `choco install fzf`)
-  - bat: `winget install sharkdp.bat` (binary is `bat`)
+- bat: `winget install sharkdp.bat` (binary is `bat`)
 
+
+## Custom Aliases (PowerShell & zsh)
+Create a short alias as a shell function (example uses `slugcopy` with `s`).
+
+Install `slugcopy` globally first:
+```bash
+npm i -g slugcopy
+# usage: 
+slugcopy "A nice house"  
+# a-nice-house (copied is copied to clipboard)
+```
+
+### Windows — PowerShell 
+Find your profile file path:
+```powershell
+$PROFILE
+```
+
+Create it if it doesn’t exist:
+```powershell
+New-Item -ItemType File -Path $PROFILE -Force
+```
+
+Open the profile for editing:
+```powershell
+notepad $PROFILE
+```
+
+Add this function (paste at the bottom and save):
+```powershell
+# Short alias for slugcopy
+function s {
+    param(
+        [Parameter(ValueFromRemainingArguments = $true)]
+        $args
+    )
+    slugcopy @args
+}
+```
+
+Reload the profile (or restart PowerShell):
+```powershell
+. $PROFILE
+```
+
+Test it:
+```powershell
+s "A nice house"
+```
+
+**Notes**
+
+If your profile doesn’t load due to policy, allow local scripts:
+```powershell
+Set-ExecutionPolicy -Scope CurrentUser RemoteSigned -Force
+```
+
+### zsh (Linux/macOS)
+macOS uses zsh by default (Catalina and later). On Linux, install and switch to zsh first (see section above).
+
+
+Open your zsh config and add the alias as a function:
+```bash
+nano ~/.zshrc
+```
+
+Add this near the bottom, save, and exit:
+```bash
+# Short alias for slugcopy
+s() { slugcopy "$@"; }
+```
+
+Reload your shell config:
+```bash
+source ~/.zshrc
+```
+
+Test it:
+```bash
+s "A nice house"   # -> a-nice-house (copied)
+```
 
 ## Useful Commands
 ```bash
