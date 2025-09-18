@@ -22,7 +22,9 @@ Opinionated, step-by-step instructions for setting up a full-stack development e
   - [Custom Aliases (PowerShell \& zsh)](#custom-aliases-powershell--zsh)
     - [Windows — PowerShell](#windows--powershell)
     - [zsh (Linux/macOS)](#zsh-linuxmacos)
-  - [PowerShell accept only next word with Right Arrow](#powershell-accept-only-next-word-with-right-arrow)
+  - [Accept only next word with Right Arrow](#accept-only-next-word-with-right-arrow)
+    - [Windows Powershell](#windows-powershell)
+    - [Mac iterm](#mac-iterm)
   - [Useful Commands](#useful-commands)
   - [Windows Notes](#windows-notes)
 
@@ -268,7 +270,9 @@ s "A nice house"   # -> a-nice-house (copied)
 ```
 
 
-## PowerShell accept only next word with Right Arrow
+## Accept only next word with Right Arrow
+
+### Windows Powershell
 Speed up inline suggestions (PSReadLine) by mapping RightArrow to accept only the next suggested word (instead of the whole line):
 
 
@@ -284,6 +288,10 @@ Save, then reload:
 ```bash
 . $PROFILE
 ```
+
+### Mac iterm
+
+Follow this guide here: https://stackoverflow.com/a/22312856/2369656
 
 
 ## Useful Commands
