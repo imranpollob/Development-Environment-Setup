@@ -172,7 +172,7 @@ chsh -s "$(which zsh)"
 
 Popular Zsh plugins/themes:
 - zsh-autosuggestions: https://github.com/zsh-users/zsh-autosuggestions#installation
-- zsh-syntax-highlighting: https://github.com/zsh-users/zsh-syntax-highlighting#installation
+- zsh-syntax-highlighting: https://github.com/zsh-users/zsh-syntax-highlighting?tab=readme-ov-file#how-to-install
 - powerlevel10k: https://github.com/romkatv/powerlevel10k#installation
 
 Other handy CLI tools:
