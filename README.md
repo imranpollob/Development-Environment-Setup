@@ -23,7 +23,6 @@ Opinionated, step-by-step instructions for setting up a full-stack development e
     - [Windows — PowerShell](#windows--powershell)
     - [zsh (Linux/macOS)](#zsh-linuxmacos)
   - [Accept only next word with Right Arrow](#accept-only-next-word-with-right-arrow)
-    - [Windows Powershell](#windows-powershell)
     - [Mac iterm](#mac-iterm)
   - [Useful Commands](#useful-commands)
   - [Windows Notes](#windows-notes)
@@ -212,40 +211,15 @@ New-Item -ItemType File -Path $PROFILE -Force
 
 Open the profile for editing:
 ```powershell
-notepad $PROFILE
+code $PROFILE
 ```
 
-Add this function (paste at the bottom and save):
+My customs shortcuts:
 ```powershell
-# Short alias for slugcopy
-function s {
-    param(
-        [Parameter(ValueFromRemainingArguments = $true)]
-        $args
-    )
-    slugcopy @args
-}
-```
-
-Reload the profile (or restart PowerShell):
-```powershell
-. $PROFILE
-```
-
-Test it:
-```powershell
-s "A nice house"
-```
-
-My other customs git shortcuts:
-```powershell
+Invoke-Expression (&starship init powershell)
 
 # Set RightArrow key as the keybinding for accepting the next word in the suggestion (ForwardWord)
 Set-PSReadLineKeyHandler -Chord "RightArrow" -Function ForwardWord
-
-# =============================
-# Custom Permanent Aliases
-# =============================
 
 # Slugcopy shortcut -> s
 function s {
@@ -258,7 +232,7 @@ function s {
 
 
 # Delete a folder
-function rm {
+function rmm {
     param([Parameter(ValueFromRemainingArguments = $true)][string[]]$Args)
 
     foreach ($t in $Args) {
@@ -298,10 +272,6 @@ function gst {
 # Add, commit, push
 # Usage: gcam "commit message"
 # -----------------------
-# -----------------------
-# Add, commit, push
-# Usage: gcam "commit message"
-# -----------------------
 function gcam {
     [CmdletBinding()]
     param (
@@ -336,9 +306,12 @@ function gcam {
     # Push to the origin remote on the current branch
     git push origin $branch
 }
-
 ```
 
+Reload the profile (or restart PowerShell):
+```powershell
+. $PROFILE
+```
 
 **Notes**
 
@@ -351,28 +324,12 @@ Set-ExecutionPolicy -Scope CurrentUser RemoteSigned -Force
 macOS uses zsh by default (Catalina and later). On Linux, install and switch to zsh first (see section above).
 
 
-Open your zsh config and add the alias as a function:
+Open the profile for editing:
 ```bash
 nano ~/.zshrc
 ```
 
-Add this near the bottom, save, and exit:
-```bash
-# Short alias for slugcopy
-s() { slugcopy "$@"; }
-```
-
-Reload your shell config:
-```bash
-source ~/.zshrc
-```
-
-Test it:
-```bash
-s "A nice house"   # -> a-nice-house (copied)
-```
-
-My other customs git shortcuts:
+My customs shortcuts:
 ```bash
 # shortcuts
 alias ggl='git pull'
@@ -397,18 +354,23 @@ gcam() {
   git commit -m "$1"
   git push origin "$branch"
 }
+
+# Short alias for slugcopy
+s() { slugcopy "$@"; }
 ```
 
+Reload shell config to apply changes:
+```bash
+source ~/.zshrc
+```
 
 ## Accept only next word with Right Arrow
-
-### Windows Powershell
 Speed up inline suggestions (PSReadLine) by mapping RightArrow to accept only the next suggested word (instead of the whole line):
 
 
 Open (or create) your profile file:
 ```bash
-notepad $PROFILE
+code $PROFILE
 ```
 Add this line (add only once):
 ```bash
