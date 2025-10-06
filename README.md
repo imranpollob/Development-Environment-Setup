@@ -239,42 +239,104 @@ s "A nice house"
 
 My other customs git shortcuts:
 ```powershell
-# -----------------------
-# Git Shortcuts (Aliases)
-# -----------------------
-Set-Alias ggl "git pull"
-Set-Alias ggp "git push"
-Set-Alias gst "git status"
+
+# Set RightArrow key as the keybinding for accepting the next word in the suggestion (ForwardWord)
+Set-PSReadLineKeyHandler -Chord "RightArrow" -Function ForwardWord
+
+# =============================
+# Custom Permanent Aliases
+# =============================
+
+# Slugcopy shortcut -> s
+function s {
+    param(
+        [Parameter(ValueFromRemainingArguments = $true)]
+        $args
+    )
+    slugcopy @args
+}
+
+
+# Delete a folder
+function rm {
+    param([Parameter(ValueFromRemainingArguments = $true)][string[]]$Args)
+
+    foreach ($t in $Args) {
+        try {
+            $resolved = Resolve-Path -LiteralPath $t -ErrorAction Stop
+            $lp = "\\?\$($resolved.Path)"
+
+            # Clear hidden/system/read-only attributes first
+            attrib -r -s -h $lp /S /D 2>$null
+
+            # Force remove, recurse, long-path safe
+            Remove-Item -LiteralPath $lp -Recurse -Force -ErrorAction Stop
+        } catch {
+            Write-Error $_
+        }
+    }
+}
 
 # -----------------------
-# Clone & auto-enter directory
-# Usage: gc <repo-url>
+# Git Shortcuts (Functions)
 # -----------------------
-function gc {
-    param (
-        [Parameter(Mandatory=$true)]
-        [string]$url
-    )
-    git clone $url
-    $repoName = [System.IO.Path]::GetFileNameWithoutExtension($url)
-    Set-Location $repoName
+
+function ggl {
+    git pull @Args
 }
+
+function ggp {
+    git push @Args
+}
+
+function gst {
+    git status @Args
+}
+
 
 # -----------------------
 # Add, commit, push
 # Usage: gcam "commit message"
 # -----------------------
+# -----------------------
+# Add, commit, push
+# Usage: gcam "commit message"
+# -----------------------
 function gcam {
+    [CmdletBinding()]
     param (
-        [Parameter(Mandatory=$true)]
-        [string]$message
+        [Parameter(Mandatory=$true, Position=0)]
+        [string]$Message
     )
 
-    $branch = git rev-parse --abbrev-ref HEAD
+    # Ensure we're in a git repo by checking for the top-level directory
+    $null = git rev-parse --show-toplevel 2>$null
+    if ($LASTEXITCODE -ne 0) {
+        Write-Error "Not inside a git repository."
+        return
+    }
+
+    # Get the current branch name
+    $branch = (git rev-parse --abbrev-ref HEAD).Trim()
+
+    # Stage all changes
     git add .
-    git commit -m $message
+
+    # Check if there are any staged changes; if not, exit gracefully
+    $status = (git status --porcelain).Trim()
+    if ([string]::IsNullOrWhiteSpace($status)) {
+        Write-Host "No changes to commit."
+        return
+    }
+
+    # Commit with the provided message
+    git commit -m "$Message"
+    if ($LASTEXITCODE -ne 0) { return } # Exit if commit fails
+
+    # Push to the origin remote on the current branch
     git push origin $branch
 }
+
 ```
 
 
