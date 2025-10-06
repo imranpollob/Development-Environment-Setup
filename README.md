@@ -269,6 +269,33 @@ Test it:
 s "A nice house"   # -> a-nice-house (copied)
 ```
 
+My other customs git shortcuts
+```bash
+# shortcuts
+alias ggl='git pull'
+alias ggp='git push'
+alias gst='git status'
+
+# git clone and go cloned to the clone directory
+gc() {
+ git clone "$1" && cd "$(basename "$1" .git)"
+}
+
+# git add, commit and push
+gcam() {
+  if [ -z "$1" ]; then
+    echo "❌ Please provide a commit message."
+    echo "Usage: gcam \"your commit message\""
+    return 1
+  fi
+
+  branch=$(git rev-parse --abbrev-ref HEAD)
+  git add .
+  git commit -m "$1"
+  git push origin "$branch"
+}
+```
+
 
 ## Accept only next word with Right Arrow
 
