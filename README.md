@@ -237,6 +237,47 @@ Test it:
 s "A nice house"
 ```
 
+My other customs git shortcuts:
+```powershell
+# -----------------------
+# Git Shortcuts (Aliases)
+# -----------------------
+Set-Alias ggl "git pull"
+Set-Alias ggp "git push"
+Set-Alias gst "git status"
+
+# -----------------------
+# Clone & auto-enter directory
+# Usage: gc <repo-url>
+# -----------------------
+function gc {
+    param (
+        [Parameter(Mandatory=$true)]
+        [string]$url
+    )
+    git clone $url
+    $repoName = [System.IO.Path]::GetFileNameWithoutExtension($url)
+    Set-Location $repoName
+}
+
+# -----------------------
+# Add, commit, push
+# Usage: gcam "commit message"
+# -----------------------
+function gcam {
+    param (
+        [Parameter(Mandatory=$true)]
+        [string]$message
+    )
+
+    $branch = git rev-parse --abbrev-ref HEAD
+    git add .
+    git commit -m $message
+    git push origin $branch
+}
+```
+
+
 **Notes**
 
 If your profile doesn’t load due to policy, allow local scripts:
@@ -269,7 +310,7 @@ Test it:
 s "A nice house"   # -> a-nice-house (copied)
 ```
 
-My other customs git shortcuts
+My other customs git shortcuts:
 ```bash
 # shortcuts
 alias ggl='git pull'
