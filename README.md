@@ -329,6 +329,11 @@ Open the profile for editing:
 nano ~/.zshrc
 ```
 
+To disable existing git aliases change the plugin git to gitfast.
+```bash
+plugins=(gitfast)
+```
+
 My customs shortcuts:
 ```bash
 # shortcuts
