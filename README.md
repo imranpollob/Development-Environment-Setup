@@ -9,7 +9,9 @@ Opinionated, step-by-step instructions for setting up a full-stack development e
   - [Table of Contents](#table-of-contents)
   - [Quick Start](#quick-start)
   - [Operating System Installation](#operating-system-installation)
+    - [Mint Related Notes](#mint-related-notes)
   - [Git](#git)
+  - [Zsh \& Shell Tools](#zsh--shell-tools)
   - [Node.js](#nodejs)
   - [Python](#python)
   - [Apache](#apache)
@@ -18,7 +20,6 @@ Opinionated, step-by-step instructions for setting up a full-stack development e
   - [phpMyAdmin](#phpmyadmin)
   - [Composer](#composer)
   - [MongoDB](#mongodb)
-  - [Zsh \& Shell Tools](#zsh--shell-tools)
   - [Custom Aliases (PowerShell \& zsh)](#custom-aliases-powershell--zsh)
     - [Windows — PowerShell](#windows--powershell)
     - [zsh (Linux/macOS)](#zsh-linuxmacos)
@@ -37,6 +38,15 @@ sudo apt update && sudo apt upgrade
 - Linux-only install: follow [this guide](https://itsfoss.com/install-ubuntu/).
 - Dual-boot Windows + Linux: follow [this guide](https://itsfoss.com/install-ubuntu-1404-dual-boot-mode-windows-8-81-uefi/).
 
+
+### Mint Related Notes
+To duplicate the taskbar apps to all monitors:
+- Right-click the taskbar, select "Add a new panel".
+- Click "Applets"
+- Open setting for "Grouped Window List"
+- Set "Show windows from other monitors" to "From all monitors"
+- You need to do this for each panel.
+
 ## Git
 ```bash
 sudo apt install -y git
@@ -50,6 +60,35 @@ Windows:
 - Install Git for Windows: `winget install --id Git.Git -e` (or Chocolatey: `choco install git`)
 - Configure the same `user.name` and `user.email` as above.
 - Git Credential Manager is included; use `git credential-manager configure` if needed.
+
+## Zsh & Shell Tools
+Install Zsh and Oh My Zsh:
+```bash
+sudo apt install -y zsh
+sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+# If the shell didn't switch, run and then restart:
+chsh -s "$(which zsh)"
+
+# After that, log out and log back in, or restart your system to apply the change
+```
+
+Popular Zsh plugins/themes:
+- zsh-autosuggestions: https://github.com/zsh-users/zsh-autosuggestions#installation
+- zsh-syntax-highlighting: https://github.com/zsh-users/zsh-syntax-highlighting?tab=readme-ov-file#how-to-install
+- powerlevel10k: https://github.com/romkatv/powerlevel10k#installation
+
+Other handy CLI tools:
+- bat: https://github.com/sharkdp/bat#installation
+- fzf: https://github.com/junegunn/fzf#installation
+
+Windows:
+- Best experience: use WSL2 and follow the Linux steps inside your distro.
+- Native PowerShell alternatives:
+  - Prompt/theme: use [Oh My Posh](https://ohmyposh.dev) for a modern, cross-shell prompt theme engine.
+  - Cross-shell prompt: https://starship.rs/
+  - fzf: `winget install junegunn.fzf` (or `choco install fzf`)
+- bat: `winget install sharkdp.bat` (binary is `bat`)
+
 
 ## Node.js
 Recommended: install via Node Version Manager ([nvm](https://github.com/nvm-sh/nvm#install--update-script))
@@ -159,32 +198,6 @@ Follow the official guide: https://www.mongodb.com/docs/manual/tutorial/install-
 
 Windows:
 - Install MongoDB Community Server: `winget install --id MongoDB.MongoDBServer -e`
-
-## Zsh & Shell Tools
-Install Zsh and Oh My Zsh:
-```bash
-sudo apt install -y zsh
-sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
-# If the shell didn't switch, run and then restart:
-chsh -s "$(which zsh)"
-```
-
-Popular Zsh plugins/themes:
-- zsh-autosuggestions: https://github.com/zsh-users/zsh-autosuggestions#installation
-- zsh-syntax-highlighting: https://github.com/zsh-users/zsh-syntax-highlighting?tab=readme-ov-file#how-to-install
-- powerlevel10k: https://github.com/romkatv/powerlevel10k#installation
-
-Other handy CLI tools:
-- bat: https://github.com/sharkdp/bat#installation
-- fzf: https://github.com/junegunn/fzf#installation
-
-Windows:
-- Best experience: use WSL2 and follow the Linux steps inside your distro.
-- Native PowerShell alternatives:
-  - Prompt/theme: use [Oh My Posh](https://ohmyposh.dev) for a modern, cross-shell prompt theme engine.
-  - Cross-shell prompt: https://starship.rs/
-  - fzf: `winget install junegunn.fzf` (or `choco install fzf`)
-- bat: `winget install sharkdp.bat` (binary is `bat`)
 
 
 ## Custom Aliases (PowerShell & zsh)
