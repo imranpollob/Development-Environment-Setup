@@ -20,7 +20,9 @@ Opinionated, step-by-step instructions for setting up a full-stack development e
   - [phpMyAdmin](#phpmyadmin)
   - [Composer](#composer)
   - [MongoDB](#mongodb)
+  - [Foundry](#foundry)
   - [Custom Aliases (PowerShell \& zsh)](#custom-aliases-powershell--zsh)
+  - [Custom Aliases (PowerShell \& zsh)](#custom-aliases-powershell--zsh-1)
     - [Windows — PowerShell](#windows--powershell)
     - [zsh (Linux/macOS)](#zsh-linuxmacos)
   - [Accept only next word with Right Arrow](#accept-only-next-word-with-right-arrow)
@@ -198,6 +200,20 @@ Follow the official guide: https://www.mongodb.com/docs/manual/tutorial/install-
 
 Windows:
 - Install MongoDB Community Server: `winget install --id MongoDB.MongoDBServer -e`
+
+## Foundry
+
+```bash
+curl -L https://foundry.paradigm.xyz | bash
+source ~/.bashrc  # or source ~/.zshrc if using zsh
+foundryup
+```
+
+This installs `forge`, `cast`, `anvil`, and `chisel` commands.
+
+Foundry works on Windows via WSL2.
+
+## Custom Aliases (PowerShell & zsh)
 
 
 ## Custom Aliases (PowerShell & zsh)
