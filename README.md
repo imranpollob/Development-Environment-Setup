@@ -22,7 +22,6 @@ Opinionated, step-by-step instructions for setting up a full-stack development e
   - [MongoDB](#mongodb)
   - [Foundry](#foundry)
   - [Custom Aliases (PowerShell \& zsh)](#custom-aliases-powershell--zsh)
-  - [Custom Aliases (PowerShell \& zsh)](#custom-aliases-powershell--zsh-1)
     - [Windows — PowerShell](#windows--powershell)
     - [zsh (Linux/macOS)](#zsh-linuxmacos)
   - [Accept only next word with Right Arrow](#accept-only-next-word-with-right-arrow)
@@ -87,7 +86,6 @@ Windows:
 - Best experience: use WSL2 and follow the Linux steps inside your distro.
 - Native PowerShell alternatives:
   - Prompt/theme: use [Oh My Posh](https://ohmyposh.dev) for a modern, cross-shell prompt theme engine.
-  - Cross-shell prompt: https://starship.rs/
   - fzf: `winget install junegunn.fzf` (or `choco install fzf`)
 - bat: `winget install sharkdp.bat` (binary is `bat`)
 
@@ -214,9 +212,6 @@ This installs `forge`, `cast`, `anvil`, and `chisel` commands.
 Foundry works on Windows via WSL2.
 
 ## Custom Aliases (PowerShell & zsh)
-
-
-## Custom Aliases (PowerShell & zsh)
 Create a short alias as a shell function (example uses `slugcopy` with `s`).
 
 Install `slugcopy` globally first:
@@ -245,8 +240,6 @@ code $PROFILE
 
 My customs shortcuts:
 ```powershell
-Invoke-Expression (&starship init powershell)
-
 # Set RightArrow key as the keybinding for accepting the next word in the suggestion (ForwardWord)
 Set-PSReadLineKeyHandler -Chord "RightArrow" -Function ForwardWord
 
@@ -294,6 +287,10 @@ function ggp {
 
 function gst {
     git status @Args
+}
+
+function gcm {
+    git checkout master
 }
 
 
