@@ -1,33 +1,32 @@
 # Development Environment Setup
 
-Opinionated, step-by-step instructions for setting up a full-stack development environment on Ubuntu, Linux Mint, or Windows.
+Opinionated, step-by-step instructions for setting up a full-stack development environment on Ubuntu, Linux Mint, or Windows. The shell customizations also cover macOS (zsh).
 
 > Tip: Perform a system update before installing new software to avoid most errors.
+>
+> Last verified: October 2026. Versions below (Node.js, PHP, Python) move quickly; check the linked official sources if a command fails.
 
 ## Table of Contents
-- [Development Environment Setup](#development-environment-setup)
-  - [Table of Contents](#table-of-contents)
-  - [Quick Start](#quick-start)
-  - [Operating System Installation](#operating-system-installation)
-    - [Mint Related Notes](#mint-related-notes)
-  - [Git](#git)
-  - [Zsh \& Shell Tools](#zsh--shell-tools)
-  - [Node.js](#nodejs)
-  - [Python](#python)
-  - [Apache](#apache)
-  - [MySQL](#mysql)
-  - [PHP](#php)
-  - [phpMyAdmin](#phpmyadmin)
-  - [Composer](#composer)
-  - [MongoDB](#mongodb)
-  - [Foundry](#foundry)
-  - [Custom Aliases (PowerShell \& zsh)](#custom-aliases-powershell--zsh)
-    - [Windows — PowerShell](#windows--powershell)
-    - [zsh (Linux/macOS)](#zsh-linuxmacos)
-  - [Accept only next word with Right Arrow](#accept-only-next-word-with-right-arrow)
-    - [Mac iterm](#mac-iterm)
-  - [Useful Commands](#useful-commands)
-  - [Windows Notes](#windows-notes)
+- [Quick Start](#quick-start)
+- [Operating System Installation](#operating-system-installation)
+  - [Mint Related Notes](#mint-related-notes)
+- [Git](#git)
+- [Zsh \& Shell Tools](#zsh--shell-tools)
+- [Node.js](#nodejs)
+- [Python](#python)
+- [Apache](#apache)
+- [MySQL](#mysql)
+- [PHP](#php)
+- [phpMyAdmin](#phpmyadmin)
+- [Composer](#composer)
+- [MongoDB](#mongodb)
+- [Foundry](#foundry)
+- [Custom Aliases (PowerShell \& zsh)](#custom-aliases-powershell--zsh)
+  - [Windows — PowerShell](#windows--powershell)
+  - [zsh (Linux/macOS)](#zsh-linuxmacos)
+  - [macOS iTerm2](#macos-iterm2)
+- [Useful Commands](#useful-commands)
+- [Windows Notes](#windows-notes)
 
 ## Quick Start
 ```bash
@@ -58,7 +57,7 @@ git config --global user.email "you@example.com"
 - Generate SSH keys for GitHub: https://docs.github.com/en/authentication/connecting-to-github-with-ssh/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent
 
 Windows:
-- Install Git for Windows: `winget install --id Git.Git -e` (or Chocolatey: `choco install git`)
+- Install Git for Windows: `winget install --id Git.Git -e` (or Chocolatey: `choco install git`). This also provides Git Bash.
 - Configure the same `user.name` and `user.email` as above.
 - Git Credential Manager is included; use `git credential-manager configure` if needed.
 
@@ -85,7 +84,7 @@ Other handy CLI tools:
 Windows:
 - Best experience: use WSL2 and follow the Linux steps inside your distro.
 - Native PowerShell alternatives:
-  - Prompt/theme: use [Oh My Posh](https://ohmyposh.dev) for a modern, cross-shell prompt theme engine.
+  - Prompt/theme: use [Oh My Posh](https://ohmyposh.dev/docs/installation/windows) for a modern, cross-shell prompt theme engine: `winget install JanDeDobbeleer.OhMyPosh --source winget`
   - fzf: `winget install junegunn.fzf` (or `choco install fzf`)
 - bat: `winget install sharkdp.bat` (binary is `bat`)
 
@@ -99,7 +98,7 @@ nvm use --lts
 
 Alternative (Linux): install standalone Node.js LTS via NodeSource
 ```bash
-curl -fsSL https://deb.nodesource.com/setup_22.x | sudo -E bash -
+curl -fsSL https://deb.nodesource.com/setup_24.x | sudo -E bash -
 sudo apt install -y nodejs
 ```
 
@@ -116,10 +115,10 @@ pyenv install <PYTHON_VERSION>
 pyenv global <PYTHON_VERSION>
 ```
 
-Alternative (Linux): use OS packages or a trusted PPA (e.g., deadsnakes for older releases). For Ubuntu 24.04+, Python 3.12+ is in the official repo.
+Alternative (Linux): use OS packages or a trusted PPA (e.g., deadsnakes for versions not in your release's repo). Ubuntu 24.04 ships Python 3.12.
 
 Windows:
-- Recommended: `winget install --id Python.Python.3.12 -e` (or latest 3.x)
+- Recommended: `winget install --id Python.Python.3.14 -e` (or another supported 3.x, e.g. `Python.Python.3.13`)
 - Alternative: pyenv-win: https://github.com/pyenv-win/pyenv-win
 
 ## Apache
@@ -129,6 +128,9 @@ sudo systemctl stop apache2.service
 sudo systemctl start apache2.service
 sudo systemctl enable apache2.service
 ```
+
+Windows:
+- Use a bundle such as [XAMPP](https://www.apachefriends.org/) or WAMP, or run Apache inside WSL2 with the steps above.
 
 ## MySQL
 ```bash
@@ -147,7 +149,7 @@ sudo mysql_secure_installation
 ```bash
 sudo mysql
 -- inside MySQL shell:
-ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'MyNewPass4!';
+ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY '<your-strong-password>';
 FLUSH PRIVILEGES;
 ```
 
@@ -161,19 +163,20 @@ Windows:
 - Alternatively use MariaDB: `winget install --id MariaDB.Server -e`
 
 ## PHP
-Recommended (Ubuntu): use supported PHP 8.x packages
+Recommended (Ubuntu LTS): use a currently supported PHP version from the [ondrej/php PPA](https://launchpad.net/~ondrej/+archive/ubuntu/php) (supports Ubuntu LTS releases only)
 ```bash
+PHPV=8.4   # or 8.5 (latest); see https://www.php.net/supported-versions.php
 sudo apt update
 sudo apt install -y software-properties-common
 sudo add-apt-repository ppa:ondrej/php -y
 sudo apt update
 sudo apt install -y \
-  php8.2 php8.2-cli php8.2-fpm php8.2-mysql php8.2-xml php8.2-curl php8.2-zip php8.2-mbstring \
-  libapache2-mod-php8.2
+  php$PHPV php$PHPV-cli php$PHPV-fpm php$PHPV-mysql php$PHPV-xml php$PHPV-curl php$PHPV-zip php$PHPV-mbstring \
+  libapache2-mod-php$PHPV
 # Enable PHP with Apache (mod_php):
-sudo a2enmod php8.2 && sudo systemctl restart apache2
+sudo a2enmod php$PHPV && sudo systemctl restart apache2
 ```
-- To use the latest stable, replace `8.2` with `8.3` if available for your distro.
+- Ubuntu 26.04 already ships PHP 8.5 in its default repositories, so the PPA is optional there.
 - Switching between versions: https://tecadmin.net/switch-between-multiple-php-version-on-ubuntu/
 
 Windows:
@@ -188,10 +191,21 @@ sudo apt install -y phpmyadmin
 
 Note: Availability via `apt` can vary by Ubuntu release. If not found, see https://www.phpmyadmin.net/downloads/ for manual install steps.
 
+Windows:
+- Included in XAMPP/WAMP, or download it from https://www.phpmyadmin.net/downloads/ (or use Adminer).
+
 ## Composer
+Install with the official, hash-verified installer (see [getcomposer.org/download](https://getcomposer.org/download/) for the current snippet):
 ```bash
-curl -sS https://getcomposer.org/installer | sudo php -- --install-dir=/usr/local/bin --filename=composer
+php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
+HASH="$(curl -sS https://composer.github.io/installer.sig)"
+php -r "if (hash_file('sha384', 'composer-setup.php') === '$HASH') { echo 'Installer verified'; } else { echo 'Installer corrupt'; unlink('composer-setup.php'); exit(1); }"
+sudo php composer-setup.php --install-dir=/usr/local/bin --filename=composer
+rm composer-setup.php
 ```
+
+Windows:
+- Download and run `Composer-Setup.exe` from https://getcomposer.org/download/ (PHP must already be installed).
 
 ## MongoDB
 Follow the official guide: https://www.mongodb.com/docs/manual/tutorial/install-mongodb-on-ubuntu/
@@ -202,14 +216,15 @@ Windows:
 ## Foundry
 
 ```bash
-curl -L https://foundry.paradigm.xyz | bash
+curl -L https://getfoundry.sh/install | bash
 source ~/.bashrc  # or source ~/.zshrc if using zsh
 foundryup
 ```
 
-This installs `forge`, `cast`, `anvil`, and `chisel` commands.
+This installs `forge`, `cast`, `anvil`, and `chisel` commands. See the [official installation guide](https://www.getfoundry.sh/introduction/installation).
 
-Foundry works on Windows via WSL2.
+Windows:
+- `foundryup` requires **Git Bash** or **WSL2**. PowerShell and Command Prompt are not supported, so run the commands above inside one of those shells.
 
 ## Custom Aliases (PowerShell & zsh)
 Create a short alias as a shell function (example uses `slugcopy` with `s`).
@@ -217,12 +232,12 @@ Create a short alias as a shell function (example uses `slugcopy` with `s`).
 Install `slugcopy` globally first:
 ```bash
 npm i -g slugcopy
-# usage: 
-slugcopy "A nice house"  
-# a-nice-house (copied is copied to clipboard)
+# usage:
+slugcopy "A nice house"
+# a-nice-house (also copied to the clipboard)
 ```
 
-### Windows — PowerShell 
+### Windows — PowerShell
 Find your profile file path:
 ```powershell
 $PROFILE
@@ -238,26 +253,21 @@ Open the profile for editing:
 code $PROFILE
 ```
 
-My customs shortcuts:
+My custom shortcuts:
 ```powershell
 # Set RightArrow key as the keybinding for accepting the next word in the suggestion (ForwardWord)
 Set-PSReadLineKeyHandler -Chord "RightArrow" -Function ForwardWord
 
 # Slugcopy shortcut -> s
 function s {
-    param(
-        [Parameter(ValueFromRemainingArguments = $true)]
-        $args
-    )
     slugcopy @args
 }
 
-
-# Delete a folder
+# Delete folders (forced, recursive, long-path safe)
 function rmm {
-    param([Parameter(ValueFromRemainingArguments = $true)][string[]]$Args)
+    param([Parameter(ValueFromRemainingArguments = $true)][string[]]$Paths)
 
-    foreach ($t in $Args) {
+    foreach ($t in $Paths) {
         try {
             $resolved = Resolve-Path -LiteralPath $t -ErrorAction Stop
             $lp = "\\?\$($resolved.Path)"
@@ -291,6 +301,15 @@ function gst {
 
 function gcm {
     git checkout master
+}
+
+# Git clone and cd into the cloned directory
+function gc {
+    param([Parameter(Mandatory = $true, Position = 0)][string]$Url)
+
+    git clone $Url
+    if ($LASTEXITCODE -ne 0) { return }
+    Set-Location ([System.IO.Path]::GetFileNameWithoutExtension($Url.TrimEnd('/')))
 }
 
 
@@ -360,14 +379,14 @@ To disable existing git aliases change the plugin git to gitfast.
 plugins=(gitfast)
 ```
 
-My customs shortcuts:
+My custom shortcuts:
 ```bash
 # shortcuts
 alias ggl='git pull'
 alias ggp='git push'
 alias gst='git status'
 
-# git clone and go cloned to the clone directory
+# git clone and cd into the cloned directory
 gc() {
  git clone "$1" && cd "$(basename "$1" .git)"
 }
@@ -395,27 +414,8 @@ Reload shell config to apply changes:
 source ~/.zshrc
 ```
 
-## Accept only next word with Right Arrow
-Speed up inline suggestions (PSReadLine) by mapping RightArrow to accept only the next suggested word (instead of the whole line):
-
-
-Open (or create) your profile file:
-```bash
-code $PROFILE
-```
-Add this line (add only once):
-```bash
-Set-PSReadLineKeyHandler -Chord "RightArrow" -Function ForwardWord
-```
-Save, then reload:
-```bash
-. $PROFILE
-```
-
-### Mac iterm
-
-Follow this guide here: https://stackoverflow.com/a/22312856/2369656
-
+### macOS iTerm2
+To accept only the next suggested word with the Right Arrow key (as in the PowerShell profile), follow [this guide](https://stackoverflow.com/a/22312856/2369656).
 
 ## Useful Commands
 ```bash
