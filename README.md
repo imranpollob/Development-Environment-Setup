@@ -217,7 +217,13 @@ Windows:
 
 ```bash
 curl -L https://getfoundry.sh/install | bash
-source ~/.bashrc  # or source ~/.zshrc if using zsh
+
+# The installer only installs `foundryup`; it does not edit your shell config.
+# Add it to PATH for this session and persist it (use ~/.zshrc if using zsh):
+export PATH="$PATH:$HOME/.foundry/bin"
+echo 'export PATH="$PATH:$HOME/.foundry/bin"' >> ~/.bashrc
+
+# Install the toolchain
 foundryup
 ```
 
@@ -298,6 +304,11 @@ function ggp {
 function gst {
     git status @Args
 }
+
+# NOTE: `gc` (Get-Content) and `gcm` (Get-Command) are built-in PowerShell aliases,
+# and aliases take precedence over functions, so remove them before redefining.
+Remove-Item Alias:gc -Force -ErrorAction SilentlyContinue
+Remove-Item Alias:gcm -Force -ErrorAction SilentlyContinue
 
 function gcm {
     git checkout master
